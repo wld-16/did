@@ -35,7 +35,7 @@ struct didDocument {
 };
 
 struct didDocumentStream {
-    std::byte stream[];
+    std::string stream;
 };
 
 struct verificationMethod {

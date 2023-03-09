@@ -2,9 +2,13 @@
 // Created by wld on 05.03.23.
 //
 
-#include "didPvoteResolver.h"
+#include "didPVoteResolver.h"
 
 didResolution didPVoteResolver::resolve(did identifier, didResolutionOptions resolutionOptions) {
+    if(identifier.methodSpecifierIdentier.starts_with("node")) {
+        // Verify whether node exists or create document
+        nlohmann::json didDocument;
+    }
     return didResolution();
 }
 
