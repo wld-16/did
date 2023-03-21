@@ -6,11 +6,41 @@
 #define E_VOTING_DIDDOCUMENT_H
 
 
+#include <sstream>
+#include <algorithm>
 #include <string>
 #include <set>
 #include <map>
 #include <ostream>
 #include "did.h"
+#include "didVerificationMethod.h"
+#include "didAuthentication.h"
+
+struct didService {
+    did id;
+    std::set<std::string> type;
+    std::string serviceEndpoint;
+
+    friend std::ostream &operator<<(std::ostream &os, const didService &service) {
+        std::stringstream types_stream;
+
+        types_stream << "[";
+        std::for_each(service.type.begin(), service.type.end(), [&types_stream, service](std::string type){
+            types_stream  << "\"" << type << "\"";
+            if(*service.type.rbegin() != type){
+                types_stream << ",";
+            }
+        });
+        types_stream << "]";
+
+        os << "{"
+            << "\"id\":" << service.id << ","
+            << "\"type\":" << types_stream.str() << ","
+            << R"("serviceEndpoint":")" << service.serviceEndpoint << "\"";
+        os << "}";
+        return os;
+    };
+};
 
 struct didDocumentMetadata {
     std::string created; //YYYY-MM-DDThh:mm:ssZ
@@ -25,13 +55,68 @@ struct didDocumentMetadata {
 
 struct didDocument {
     did id; // is required
-    std::set<std::string> also_known_as;
+    std::set<std::string> also_known_as = {};
     did controller;
-    std::set<did> controllers;
-    std::string authentication;
-    std::string verification_method;
-    std::string service;
-    std::string service_endpoint;
+    std::set<did> controllers = {};
+    didAuthentication authentication;
+    std::set<didVerificationMethod> verification_method;
+    didService service;
+
+    std::string aliasesAsString(){
+        std::stringstream aliases_string;
+        aliases_string << "[";
+        std::for_each(also_known_as.begin(), also_known_as.end(), [&aliases_string, this](std::string alias){
+            aliases_string <<  alias;
+            if(also_known_as.rbegin()->data() != alias.data()){
+                aliases_string << ",";
+            }
+        });
+        aliases_string << "]";
+        return aliases_string.str();
+    }
+
+    std::string verificationMethodAsString(){
+        std::stringstream verification_method_stream;
+        verification_method_stream << "[";
+        verification_method_stream;
+        std::for_each(verification_method.begin(), verification_method.end(), [&verification_method_stream, this](didVerificationMethod method){
+            verification_method_stream << "{"
+                << "\"id\":" << method.id << ","
+                << "\"type\":" << method.type << ","
+                << "\"controller\":" << method.controller << ","
+                << "\"publicKeyMultibase\":" << method.publicKeyMultibase << "}";
+            if(verification_method.rbegin()->id != method.id){
+                verification_method_stream << ",";
+            }
+        });
+        verification_method_stream << "]";
+        return verification_method_stream.str();
+    }
+
+    std::string controllersAsString(){
+        std::stringstream sstream;
+        sstream << "[";
+        std::for_each(controllers.begin(), controllers.end(), [&sstream, this](did _controller){
+            sstream << _controller;
+            if(*controllers.rbegin() != _controller){
+                sstream << ",";
+            }
+        });
+        sstream << "]";
+        return sstream.str();
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, didDocument document) {
+        os << "{"
+           << "\"id\":" << document.id << ","
+           << (document.also_known_as.empty() ? "" :  "\"aliases\":" + document.aliasesAsString() + ",")
+           << (document.controllers.empty() ? "" :"\"controllers\":" + document.controllersAsString() + ",")
+           << "\"authentication\":" << document.authentication << ","
+           << "\"verificationMethod\":" << document.verificationMethodAsString() << ","
+           << "\"service\":[" << document.service << "]"
+           << "}";;
+        return os;
+    }
 };
 
 struct didDocumentStream {
@@ -46,12 +131,6 @@ struct verificationMethod {
     std::string publicKeyMultibase;
 
     friend std::ostream &operator<<(std::ostream &os, const verificationMethod &method);
-};
-
-struct service {
-    std::string id;
-    std::set<std::string> type;
-    std::string serviceEndpoint;
 };
 
 

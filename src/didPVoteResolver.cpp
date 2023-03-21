@@ -7,14 +7,20 @@
 didResolution didPVoteResolver::resolve(did identifier, didResolutionOptions resolutionOptions) {
     if(identifier.methodSpecifierIdentier.starts_with("node")) {
         // Verify whether node exists or create document
-        nlohmann::json didDocument;
     }
-    return didResolution();
+    return didResolution{
+        {},
+        {did("::"),{},did("::"),{},{did(""),"",did(""),""}, {},{did("::"),{},""}},
+        {"","",false,"","","", {},did("::")}};
 }
 
 didByteStreamResolution
 didPVoteResolver::resolveRepresentation(did identifier, didResolutionOptions resolutionOptions) {
-    return didByteStreamResolution();
+    const didByteStreamResolution &resolution = didByteStreamResolution{
+        {},
+        {},
+        {"","",false,"", ", ", "", std::set<did>{},did("")}};
+    return resolution;
 }
 
 didDereference didPVoteResolver::dereference(std::string didUrl, didDereferenceOptions dereferenceOptions) {

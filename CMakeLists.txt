@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-project(did-pvote)
+project(did)
 
 set(nlohmann_json_DIR ~/json-3.10.4/build)
 set(CMAKE_CXX_STANDARD 20)
@@ -13,12 +13,17 @@ set(SOURCE_FILES
         src/didPVoteResolver.cpp
         src/did.h
         src/didDocument.cpp
-        src/didDocument.h)
+        src/didDocument.h
+        src/didVerificationMethod.h
+        src/didAuthentication.h
+        )
 
-add_executable(did_pvote_app  ${SOURCE_FILES})
+add_executable(did_app  ${SOURCE_FILES})
 #add_executable(did_test ${IDENTITY_SRC_FILES})
-add_library(did_pvote SHARED ${SOURCE_FILES})
+add_library(did SHARED ${SOURCE_FILES})
 
 #target_link_libraries(identity_test)
-target_link_libraries(did_pvote_app PRIVATE nlohmann_json::nlohmann_json Threads::Threads)
-target_link_libraries(did_pvote PRIVATE nlohmann_json::nlohmann_json Threads::Threads)
+target_link_libraries(did_app PRIVATE Threads::Threads)
+target_link_libraries(did PRIVATE Threads::Threads)
+
+add_subdirectory(test)
