@@ -34,9 +34,9 @@ struct didService {
         types_stream << "]";
 
         os << "{"
-            << "\"id\":" << service.id << ","
-            << "\"type\":" << types_stream.str() << ","
-            << R"("serviceEndpoint":")" << service.serviceEndpoint << "\"";
+            << (service.id.methodSpecifierIdentier.empty() ? "": "\"id\":" + service.id.str() +",")
+            << (service.type.empty() ? "": "\"type\":" + types_stream.str() + ",")
+            << (service.serviceEndpoint.empty() ? "": R"("serviceEndpoint":")" + service.serviceEndpoint + "\"");
         os << "}";
         return os;
     };
@@ -60,7 +60,7 @@ struct didDocument {
     std::set<did> controllers = {};
     didAuthentication authentication;
     std::set<didVerificationMethod> verification_method;
-    didService service;
+    std::set<didService> service;
 
     std::string aliasesAsString(){
         std::stringstream aliases_string;
@@ -73,6 +73,19 @@ struct didDocument {
         });
         aliases_string << "]";
         return aliases_string.str();
+    }
+
+    std::string serviceAsString(){
+        std::stringstream service_stream;
+        service_stream << "[";
+        std::for_each(service.begin(), service.end(), [&service_stream, this](didService service_element){
+            service_stream << service_element;
+            if(service.rbegin()->id != service_element.id){
+                service_stream << ",";
+            }
+        });
+        service_stream << "]";
+        return service_stream.str();
     }
 
     std::string verificationMethodAsString(){
@@ -112,9 +125,9 @@ struct didDocument {
            << (document.also_known_as.empty() ? "" :  "\"aliases\":" + document.aliasesAsString() + ",")
            << (document.controllers.empty() ? "" :"\"controllers\":" + document.controllersAsString() + ",")
            << "\"authentication\":" << document.authentication << ","
-           << "\"verificationMethod\":" << document.verificationMethodAsString() << ","
-           << "\"service\":[" << document.service << "]"
-           << "}";;
+           << "\"verificationMethod\":" << document.verificationMethodAsString()
+           << (document.service.empty() ? "": ",\"service\":[" + document.serviceAsString() + "]")
+           << "}";
         return os;
     }
 };

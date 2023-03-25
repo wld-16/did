@@ -5,12 +5,14 @@
 #ifndef E_VOTING_DID_H
 #define E_VOTING_DID_H
 
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <ostream>
 #include <ranges>
 #include <utility>
+#include <regex>
 
 //TODO: Implement Syntax rules
 
@@ -68,6 +70,20 @@ struct did {
     friend std::ostream &operator<<(std::ostream &os, const did &did) {
         os << "\"did:" << did.method << ":" << did.methodSpecifierIdentier << "\"";
         return os;
+    }
+
+    static bool validateDID(std::string input){
+        // TODO: Fix slash issue
+        //const std::regex did_regex("did:[a-z]+:[a-z|A-Z|0-9]+");
+        const std::regex did_regex("did:[a-z]+:.+");
+        bool found_match = std::regex_match(input, did_regex);
+        return found_match;
+    }
+
+    std::string str() const {
+        std::stringstream sstringstream;
+        sstringstream << this;
+        return sstringstream.str();
     }
 };
 

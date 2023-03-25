@@ -4,7 +4,7 @@ set(SOURCE_FILES
         testDid.cpp
 )
 
-set(name test_did_pvote)
+set(name test_did)
 
 add_executable(${name} ${SOURCE_FILES})
 
@@ -13,7 +13,7 @@ target_link_libraries(${name} PUBLIC
         gtest_main
         gmock
         gmock_main
-        did_pvote
+        did_lib
         )
 
 add_test(

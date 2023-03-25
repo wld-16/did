@@ -10,7 +10,7 @@ didResolution didPVoteResolver::resolve(did identifier, didResolutionOptions res
     }
     return didResolution{
         {},
-        {did("::"),{},did("::"),{},{did(""),"",did(""),""}, {},{did("::"),{},""}},
+        {did("::"),{},did("::"),{},{did(""),"",did(""),""}, {},{}},
         {"","",false,"","","", {},did("::")}};
 }
 

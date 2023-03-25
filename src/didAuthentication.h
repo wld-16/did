@@ -22,8 +22,11 @@ struct didAuthentication {
     }
 
     friend std::ostream &operator<<(std::ostream &os, const didAuthentication &authentication) {
-        os << "{\"id\": " << authentication.id << R"(,"type":")" << authentication.type << R"(","controller":)"
-           << authentication.controller << R"(,"publicKeyMultibase":")" << authentication.publicKeyMultibase << "\"}";
+        os << "{" << (authentication.id.methodSpecifierIdentier.empty() ? "": "\"id\": " + authentication.id.str())
+            << (authentication.type.empty() ? "": R"(,"type":")" + authentication.type)
+            << (authentication.controller.methodSpecifierIdentier.empty() ? "": (R"(","controller":)") + authentication.controller.str())
+            << (authentication.publicKeyMultibase.empty() ? "": R"(,"publicKeyMultibase":")" + authentication.publicKeyMultibase +"\"")
+            << "}";
         return os;
     }
 };

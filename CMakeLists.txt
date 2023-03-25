@@ -20,10 +20,10 @@ set(SOURCE_FILES
 
 add_executable(did_app  ${SOURCE_FILES})
 #add_executable(did_test ${IDENTITY_SRC_FILES})
-add_library(did SHARED ${SOURCE_FILES})
+add_library(did_lib SHARED ${SOURCE_FILES})
 
 #target_link_libraries(identity_test)
 target_link_libraries(did_app PRIVATE Threads::Threads)
-target_link_libraries(did PRIVATE Threads::Threads)
+target_link_libraries(did_lib PRIVATE Threads::Threads)
 
 add_subdirectory(test)
