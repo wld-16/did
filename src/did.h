@@ -32,6 +32,9 @@ struct did {
         std::string item;
 
         while (getline (ss, item, ':')) {
+            if(item.find('\"') == item.size() - 1){
+                item.pop_back();
+            }
             result.push_back (item);
         }
         method = result[1];
@@ -68,7 +71,7 @@ struct did {
     }
 
     friend std::ostream &operator<<(std::ostream &os, const did &did) {
-        os << "\"did:" << did.method << ":" << did.methodSpecifierIdentier << "\"";
+        os << "did:" << did.method << ":" << did.methodSpecifierIdentier;
         return os;
     }
 
@@ -80,10 +83,22 @@ struct did {
         return found_match;
     }
 
-    std::string str() const {
+    [[nodiscard]] std::string str() const {
         std::stringstream sstringstream;
         sstringstream << this;
         return sstringstream.str();
+    }
+};
+
+struct escapedDid : did {
+    escapedDid(const did &id) {
+        this->method = id.method;
+        this->methodSpecifierIdentier = id.methodSpecifierIdentier;
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const escapedDid &did) {
+        os << "\"" << "did:" << did.method << ":" << did.methodSpecifierIdentier << "\"";
+        return os;
     }
 };
 

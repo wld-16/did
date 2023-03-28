@@ -91,7 +91,6 @@ struct didDocument {
     std::string verificationMethodAsString(){
         std::stringstream verification_method_stream;
         verification_method_stream << "[";
-        verification_method_stream;
         std::for_each(verification_method.begin(), verification_method.end(), [&verification_method_stream, this](didVerificationMethod method){
             verification_method_stream << "{"
                 << "\"id\":" << method.id << ","
@@ -110,7 +109,7 @@ struct didDocument {
         std::stringstream sstream;
         sstream << "[";
         std::for_each(controllers.begin(), controllers.end(), [&sstream, this](did _controller){
-            sstream << _controller;
+            sstream << escapedDid{_controller};
             if(*controllers.rbegin() != _controller){
                 sstream << ",";
             }
@@ -119,9 +118,10 @@ struct didDocument {
         return sstream.str();
     }
 
+
     friend std::ostream &operator<<(std::ostream &os, didDocument document) {
         os << "{"
-           << "\"id\":" << document.id << ","
+           << "\"id\":" << escapedDid{document.id} << ","
            << (document.also_known_as.empty() ? "" :  "\"aliases\":" + document.aliasesAsString() + ",")
            << (document.controllers.empty() ? "" :"\"controllers\":" + document.controllersAsString() + ",")
            << "\"authentication\":" << document.authentication << ","
