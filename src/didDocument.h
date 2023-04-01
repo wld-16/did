@@ -121,13 +121,18 @@ struct didDocument {
 
     friend std::ostream &operator<<(std::ostream &os, didDocument document) {
         os << "{"
-           << "\"id\":" << escapedDid{document.id} << ","
-           << (document.also_known_as.empty() ? "" :  "\"aliases\":" + document.aliasesAsString() + ",")
-           << (document.controllers.empty() ? "" :"\"controllers\":" + document.controllersAsString() + ",")
-           << "\"authentication\":" << document.authentication << ","
-           << "\"verificationMethod\":" << document.verificationMethodAsString()
-           << (document.service.empty() ? "": ",\"service\":[" + document.serviceAsString() + "]")
-           << "}";
+           << "\"id\":" << escapedDid{document.id} << ",";
+        if(!document.also_known_as.empty())
+            { os <<  "\"aliases\":" << document.aliasesAsString() << ","; }
+        if(!document.controller.method.empty())
+            { os << "\"controller\":" << escapedDid{document.controller} << ","; }
+        if(!document.controllers.empty())
+            { os << "\"controllers\":" << document.controllersAsString() << ","; }
+        os << "\"authentication\":" << document.authentication << ",";
+        os << "\"verificationMethod\":" << document.verificationMethodAsString();
+        if(!document.service.empty())
+            { os << ",\"service\":[" << document.serviceAsString() << "]";}
+        os  << "}";
         return os;
     }
 };

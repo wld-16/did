@@ -84,9 +84,7 @@ struct did {
     }
 
     [[nodiscard]] std::string str() const {
-        std::stringstream sstringstream;
-        sstringstream << this;
-        return sstringstream.str();
+        return "did:" + method + ":" + methodSpecifierIdentier;
     }
 };
 
